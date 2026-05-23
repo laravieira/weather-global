@@ -23,6 +23,8 @@ jobs:
         run: npm run cloudflare:build
         env:
           NEXT_PUBLIC_API_URL: https://global-weather.laravieira.me
+          NEXT_PUBLIC_OPEN_METEO_FORECAST_ENDPOINT: ${{ secrets.OPEN_METEO_FORECAST_ENDPOINT }}
+          NEXT_PUBLIC_OPEN_METEO_GEOCODING_ENDPOINT: ${{ secrets.OPEN_METEO_GEOCODING_ENDPOINT }}
 
       - name: Build & Deploy Worker
         uses: cloudflare/wrangler-action@v3
