@@ -2,10 +2,8 @@ import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import { OpenMeteoService } from './OpenMeteoService'
 import { OpenMeteoForecastCurrentOptions } from '@/types/OpenMeteo'
 
-// Explicitly type the mock function so TypeScript allows mocking any return type
 const mockGet: jest.Mock<never> = jest.fn()
 
-// Mock the API layer entirely
 jest.mock('@/services/API', () => {
   return jest.fn().mockImplementation(() => ({
     get: mockGet,
