@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { PropsWithChildren } from 'react'
 import Link from '@/components/ui/Link'
+import Container from '@mui/material/Container'
 
 export default function Layout({ children }: PropsWithChildren) {
   function renderContent() {
@@ -27,7 +28,6 @@ export default function Layout({ children }: PropsWithChildren) {
         sx={{
           flexShrink: 0,
           display: 'flex',
-          alignItems: 'center',
           justifyContent: 'center',
           padding: 2,
         }}
@@ -46,7 +46,7 @@ export default function Layout({ children }: PropsWithChildren) {
   }
 
   return (
-    <Box
+    <Container
       sx={{
         display: 'grid',
         gridTemplateRows: '1fr auto',
@@ -56,6 +56,6 @@ export default function Layout({ children }: PropsWithChildren) {
     >
       {renderContent()}
       {renderFooter()}
-    </Box>
+    </Container>
   )
 }

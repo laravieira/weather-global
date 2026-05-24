@@ -7,7 +7,7 @@ import {
 } from '@/types/OpenMeteo'
 import API from '@/services/API'
 import { AxiosResponse } from 'axios'
-import { KeyDefault } from '@/types/Services'
+import { KeyDefault, MutationArg } from '@/types/Services'
 
 export class OpenMeteoService {
   private static forecastURI = process.env.NEXT_PUBLIC_OPEN_METEO_FORECAST_ENDPOINT ?? ''
@@ -53,8 +53,9 @@ export class OpenMeteoService {
       .catch(error => Promise.reject(API.parseErrorMessage(error)))
   }
 
-  static async searchCity(props: KeyDefault<OpenMeteoGeocodingProps>): Promise<OpenMeteoGeocodingLocation[]> {
+  static async searchCity(props: KeyDefault<Omit<OpenMeteoGeocodingProps, 'name'>>, { arg }: MutationArg<string>): Promise<OpenMeteoGeocodingLocation[]> {
     const query = new URLSearchParams({
+      name: arg,
       ...props,
       count: props.count?.toString() ?? '10',
       format: 'json',

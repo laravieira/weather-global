@@ -47,11 +47,11 @@ describe('OpenMeteoService', () => {
       }
       mockGet.mockResolvedValueOnce(mockLocationResponse)
 
-      const props = { key: 'search', name: 'Juiz de Fora', language: 'pt' }
-      const result = await OpenMeteoService.searchCity(props)
+      const props = { key: 'search', language: 'pt' }
+      const result = await OpenMeteoService.searchCity(props, { arg: 'Juiz de Fora' })
 
       expect(mockGet).toHaveBeenCalledWith(
-        expect.stringContaining('name=Juiz+de+Fora&language=pt&count=10&format=json'),
+        expect.stringContaining('name=Juiz+de+Fora&key=search&language=pt&count=10&format=json'),
       )
       expect(result).toHaveLength(1)
       expect(result[0].name).toBe('Juiz de Fora')
@@ -66,7 +66,7 @@ describe('OpenMeteoService', () => {
         data: {},
       })
 
-      const result = await OpenMeteoService.searchCity({ key: 'search', name: 'FakeCity' })
+      const result = await OpenMeteoService.searchCity({ key: 'search' }, { arg: 'FakeCity' })
       expect(result).toEqual([])
     })
   })

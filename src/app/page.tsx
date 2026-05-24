@@ -1,41 +1,62 @@
 'use client'
 
-import useSWR from 'swr'
+import SearchBar from '@/components/ui/SearchBar'
+import { useSWRMutationWithDebounce } from '@/hooks/useSWRMutationWithDebounce'
 import { OpenMeteoService } from '@/services/OpenMeteoService'
-import { OpenMeteoForecastCurrentOptions } from '@/types/OpenMeteo'
-import { WiDaySnow } from 'weather-icons-react'
 import Typography from '@mui/material/Typography'
+import { OpenMeteoGeocodingLocation } from '@/types/OpenMeteo'
+import Box from '@mui/material/Box'
+import Link from '@/components/ui/Link'
 
-export default function Home() {
-  const { data: [location] = [] } = useSWR(
-    { key: 'search', name: 'Juiz de Fora', language: 'pt' },
+export default function SearchCity() {
+  const { data, error, isMutating, trigger } = useSWRMutationWithDebounce(
+    { key: 'cities' },
     OpenMeteoService.searchCity,
-    {
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
-    },
+    { debounce: 500 },
   )
-  const { data: weather } = useSWR(
-    location?.id
-      ? {
-          key: 'weather',
-          latitude: [location?.latitude],
-          longitude: [location?.longitude],
-          current: [OpenMeteoForecastCurrentOptions.TEMPERATURE_2M, OpenMeteoForecastCurrentOptions.WIND_SPEED_10M, OpenMeteoForecastCurrentOptions.WEATHER_CODE],
-        }
-      : null,
-    OpenMeteoService.weather,
-  )
-  console.debug(location, weather)
+
+  function renderEmpty() {
+    return (
+      <Typography variant="h3">Search for a city</Typography>
+    )
+  }
+
+  function renderError() {
+    return (
+      <Typography variant="h3">Error: {error as string}</Typography>
+    )
+  }
+
+  function renderLoading() {
+    return (
+      <Typography variant="h3">Loading</Typography>
+    )
+  }
+
+  function renderNoResults() {
+    return (
+      <Typography variant="h3">No Results</Typography>
+    )
+  }
+
+  function renderLocation(location: OpenMeteoGeocodingLocation) {
+    return (
+      <Box key={location.id} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography variant="h5">{location.name}, {location.country}</Typography>
+        <Link href={`/${location.latitude}/${location.longitude}`}>Weather</Link>
+      </Box>
+    )
+  }
 
   return (
     <>
-      <WiDaySnow size={300} color="#000" />
-      <Typography variant="h1">Search a city</Typography>
-      <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-        <li className="mb-2 tracking-[-.01em]">{ location?.name }, {location?.admin1}</li>
-        <li className="tracking-[-.01em]">Temperature: { weather?.current?.temperature_2m } { weather?.current_units?.temperature_2m }</li>
-      </ol>
+      <SearchBar onSearchChange={trigger} />
+
+      {!data && !error && !isMutating && renderEmpty()}
+      {!data && !!error && !isMutating && renderError()}
+      {(!data || data.length === 0) && isMutating && renderLoading()}
+      {data?.length === 0 && !isMutating && renderNoResults()}
+      {!!data?.length && data?.map(renderLocation)}
     </>
   )
 }
