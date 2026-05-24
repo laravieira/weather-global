@@ -8,6 +8,7 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import './globals.css'
 import Layout from '@/components/Layout'
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter'
 
 export const metadata: Metadata = {
   title: 'Weather Global',
@@ -27,10 +28,12 @@ export default function RootLayout({
         <title>Weather Global</title>
       </head>
       <body>
-        <CssBaseline />
-        <Layout>
-          {children}
-        </Layout>
+        <AppRouterCacheProvider>
+          <CssBaseline />
+          <Layout>
+            {children}
+          </Layout>
+        </AppRouterCacheProvider>
       </body>
     </html>
   )
