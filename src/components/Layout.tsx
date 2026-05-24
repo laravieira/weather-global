@@ -3,8 +3,45 @@ import Typography from '@mui/material/Typography'
 import { PropsWithChildren } from 'react'
 import Link from '@/components/ui/Link'
 import Container from '@mui/material/Container'
+import Image from 'next/image'
 
 export default function Layout({ children }: PropsWithChildren) {
+  function renderBackground() {
+    return (
+      <Box
+        sx={{
+          position: 'fixed',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: -1,
+          overflow: 'hidden',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <Image
+          src="/background.png"
+          alt="Forecast background"
+          width={689}
+          height={360}
+          priority
+          className="w-full h-full object-cover blur-lg scale-110"
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(255, 255, 255, 0.5)',
+          }}
+        />
+      </Box>
+    )
+  }
+
   function renderContent() {
     return (
       <Box
@@ -15,6 +52,8 @@ export default function Layout({ children }: PropsWithChildren) {
           alignItems: 'center',
           justifyContent: 'center',
           padding: 2,
+          maxWidth: '100%',
+          overflow: 'hidden',
         }}
       >
         {children}
@@ -53,7 +92,9 @@ export default function Layout({ children }: PropsWithChildren) {
         gridTemplateColumns: '1fr',
         minHeight: '100vh',
       }}
+      maxWidth="md"
     >
+      {renderBackground()}
       {renderContent()}
       {renderFooter()}
     </Container>

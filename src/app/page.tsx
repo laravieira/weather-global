@@ -4,59 +4,54 @@ import SearchBar from '@/components/ui/SearchBar'
 import { useSWRMutationWithDebounce } from '@/hooks/useSWRMutationWithDebounce'
 import { OpenMeteoService } from '@/services/OpenMeteoService'
 import Typography from '@mui/material/Typography'
-import { OpenMeteoGeocodingLocation } from '@/types/OpenMeteo'
+import LocationItem from '@/components/ui/LocationItem'
+import List from '@mui/material/List'
+import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
-import Link from '@/components/ui/Link'
+import { WrongLocationOutlined } from '@mui/icons-material'
 
 export default function SearchCity() {
   const { data, error, isMutating, trigger } = useSWRMutationWithDebounce(
-    { key: 'cities' },
-    OpenMeteoService.searchCity,
-    { debounce: 500 },
+    { key: 'cities', count: 15 },
+    OpenMeteoService.searchLocation,
+    { debounce: 350, onError: console.error },
   )
-
-  function renderEmpty() {
-    return (
-      <Typography variant="h3">Search for a city</Typography>
-    )
-  }
 
   function renderError() {
     return (
-      <Typography variant="h3">Error: {error as string}</Typography>
-    )
-  }
-
-  function renderLoading() {
-    return (
-      <Typography variant="h3">Loading</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 8 }}>
+        <WrongLocationOutlined sx={{ width: 64, height: 64 }} color="error" />
+        <Typography variant="h3" color="error">{error}</Typography>
+      </Box>
     )
   }
 
   function renderNoResults() {
     return (
-      <Typography variant="h3">No Results</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 8 }}>
+        <WrongLocationOutlined sx={{ width: 64, height: 64 }} />
+        <Typography variant="h3">No locations found</Typography>
+      </Box>
     )
   }
 
-  function renderLocation(location: OpenMeteoGeocodingLocation) {
+  function renderLocations() {
     return (
-      <Box key={location.id} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography variant="h5">{location.name}, {location.country}</Typography>
-        <Link href={`/${location.latitude}/${location.longitude}`}>Weather</Link>
-      </Box>
+      <List sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        { data?.map(location => <LocationItem key={location.id} location={location} />)}
+      </List>
     )
   }
 
   return (
     <>
-      <SearchBar onSearchChange={trigger} />
-
-      {!data && !error && !isMutating && renderEmpty()}
+      <Box sx={{ width: '100%', height: 56 + 3 }}>
+        <SearchBar onSearchChange={trigger} />
+        {isMutating && <LinearProgress aria-label="Loading…" sx={{ width: '100%', height: 3 }} />}
+      </Box>
       {!data && !!error && !isMutating && renderError()}
-      {(!data || data.length === 0) && isMutating && renderLoading()}
       {data?.length === 0 && !isMutating && renderNoResults()}
-      {!!data?.length && data?.map(renderLocation)}
+      {!!data?.length && renderLocations()}
     </>
   )
 }

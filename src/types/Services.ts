@@ -5,3 +5,8 @@ export type KeyDefault<T extends object> = {
 export type MutationArg<T> = {
   arg: T
 }
+
+export type KeyLocation = {
+  key: string
+  location: number
+}

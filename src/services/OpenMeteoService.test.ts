@@ -15,12 +15,12 @@ describe('OpenMeteoService', () => {
     jest.clearAllMocks()
 
     // Set environment URIs so the constructor doesn't throw
-    OpenMeteoService.setForecastURI('https://api.open-meteo.com/v1/forecast')
-    OpenMeteoService.setGeocodingURI('https://geocoding-api.open-meteo.com/v1/search')
+    OpenMeteoService.setForecastURI('https://api.open-meteo.com/v1')
+    OpenMeteoService.setGeocodingURI('https://geocoding-api.open-meteo.com/v1')
   })
 
-  describe('searchCity', () => {
-    it('should query the geocoding endpoint and return matching city results', async () => {
+  describe('searchLocation', () => {
+    it('should query the geocoding endpoint and return matching location results', async () => {
       const mockLocationResponse = {
         status: 200,
         statusText: 'OK',
@@ -48,7 +48,7 @@ describe('OpenMeteoService', () => {
       mockGet.mockResolvedValueOnce(mockLocationResponse)
 
       const props = { key: 'search', language: 'pt' }
-      const result = await OpenMeteoService.searchCity(props, { arg: 'Juiz de Fora' })
+      const result = await OpenMeteoService.searchLocation(props, { arg: 'Juiz de Fora' })
 
       expect(mockGet).toHaveBeenCalledWith(
         expect.stringContaining('name=Juiz+de+Fora&key=search&language=pt&count=10&format=json'),
@@ -66,8 +66,41 @@ describe('OpenMeteoService', () => {
         data: {},
       })
 
-      const result = await OpenMeteoService.searchCity({ key: 'search' }, { arg: 'FakeCity' })
+      const result = await OpenMeteoService.searchLocation({ key: 'search' }, { arg: 'FakeCity' })
       expect(result).toEqual([])
+    })
+  })
+
+  describe('location', () => {
+    it('should query the geocoding endpoint and return matching location', async () => {
+      const mockLocationResponse = {
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+        data: {
+          id: 3459954,
+          name: 'Juiz de Fora',
+          latitude: -21.7642,
+          longitude: -43.3503,
+          elevation: 677,
+          feature_code: 'PPL',
+          country_code: 'BR',
+          timezone: 'America/Sao_Paulo',
+          population: 500000,
+          country_id: 1,
+          country: 'Brazil',
+        },
+      }
+      mockGet.mockResolvedValueOnce(mockLocationResponse)
+
+      const props = { key: 'location', language: 'pt', location: 3459954 }
+      const result = await OpenMeteoService.location(props)
+
+      expect(mockGet).toHaveBeenCalledWith(
+        expect.stringContaining('id=3459954'),
+      )
+      expect(result.id).toBe(3459954)
     })
   })
 

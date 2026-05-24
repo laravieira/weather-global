@@ -7,7 +7,7 @@ import {
 } from '@/types/OpenMeteo'
 import API from '@/services/API'
 import { AxiosResponse } from 'axios'
-import { KeyDefault, MutationArg } from '@/types/Services'
+import { KeyDefault, KeyLocation, MutationArg } from '@/types/Services'
 
 export class OpenMeteoService {
   private static forecastURI = process.env.NEXT_PUBLIC_OPEN_METEO_FORECAST_ENDPOINT ?? ''
@@ -45,7 +45,7 @@ export class OpenMeteoService {
     const query = new URLSearchParams(params)
 
     return (new API())
-      .get(`${OpenMeteoService.forecastURI}?${query.toString()}`)
+      .get(`${OpenMeteoService.forecastURI}/forecast?${query.toString()}`)
       .then((response: AxiosResponse<OpenMeteoWeather>) => {
         if (response.status === 200) return response.data
         return Promise.reject(response)
@@ -53,7 +53,7 @@ export class OpenMeteoService {
       .catch(error => Promise.reject(API.parseErrorMessage(error)))
   }
 
-  static async searchCity(props: KeyDefault<Omit<OpenMeteoGeocodingProps, 'name'>>, { arg }: MutationArg<string>): Promise<OpenMeteoGeocodingLocation[]> {
+  static async searchLocation(props: KeyDefault<Omit<OpenMeteoGeocodingProps, 'name'>>, { arg }: MutationArg<string>): Promise<OpenMeteoGeocodingLocation[]> {
     const query = new URLSearchParams({
       name: arg,
       ...props,
@@ -62,11 +62,23 @@ export class OpenMeteoService {
     })
 
     return (new API())
-      .get(`${OpenMeteoService.geocodingURI}?${query.toString()}`)
+      .get(`${OpenMeteoService.geocodingURI}/search?${query.toString()}`)
       .then((response: AxiosResponse<OpenMeteoGeocodingLocationResponse>) => {
         if (Array.isArray(response.data?.results))
           return response.data.results
         if (response.status < 300) return [] as OpenMeteoGeocodingLocation[]
+        return Promise.reject(response)
+      })
+      .catch(error => Promise.reject(API.parseErrorMessage(error)))
+  }
+
+  static async location({ location }: KeyLocation): Promise<OpenMeteoGeocodingLocation> {
+    const query = new URLSearchParams({ id: location.toString() })
+
+    return (new API())
+      .get(`${OpenMeteoService.geocodingURI}/get?${query.toString()}`)
+      .then((response: AxiosResponse<OpenMeteoGeocodingLocation>) => {
+        if (response.status === 200) return response.data
         return Promise.reject(response)
       })
       .catch(error => Promise.reject(API.parseErrorMessage(error)))

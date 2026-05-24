@@ -1,6 +1,6 @@
-import Box from '@mui/material/Box'
 import { WiDaySnow } from 'weather-icons-react'
 import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
 
 type SearchBarProps = {
   onSearchChange?: (search: string) => void
@@ -8,14 +8,21 @@ type SearchBarProps = {
 
 function SearchBar({ onSearchChange }: SearchBarProps) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <WiDaySnow size={100} color="#000" />
-      <TextField
-        variant="outlined"
-        label="Search a city"
-        onChange={event => onSearchChange?.(event.currentTarget.value)}
-      />
-    </Box>
+    <TextField
+      sx={{ width: '100%' }}
+      variant="outlined"
+      label="Search a city"
+      onChange={event => onSearchChange?.(event.currentTarget.value)}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <WiDaySnow size={36} color="inherit" />
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
   )
 }
 
