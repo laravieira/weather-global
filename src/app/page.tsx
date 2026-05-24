@@ -9,8 +9,9 @@ import List from '@mui/material/List'
 import LinearProgress from '@mui/material/LinearProgress'
 import Box from '@mui/material/Box'
 import { WrongLocationOutlined } from '@mui/icons-material'
+import Error from '@/components/ui/Error'
 
-export default function SearchCity() {
+export default function SearchCityPage() {
   const { data, error, isMutating, trigger } = useSWRMutationWithDebounce(
     { key: 'cities', count: 15 },
     OpenMeteoService.searchLocation,
@@ -18,12 +19,7 @@ export default function SearchCity() {
   )
 
   function renderError() {
-    return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 8 }}>
-        <WrongLocationOutlined sx={{ width: 64, height: 64 }} color="error" />
-        <Typography variant="h3" color="error">{error}</Typography>
-      </Box>
-    )
+    return <Error error={error ?? 'Something went wrong'} />
   }
 
   function renderNoResults() {
@@ -49,6 +45,7 @@ export default function SearchCity() {
         <SearchBar onSearchChange={trigger} />
         {isMutating && <LinearProgress aria-label="Loading…" sx={{ width: '100%', height: 3 }} />}
       </Box>
+
       {!data && !!error && !isMutating && renderError()}
       {data?.length === 0 && !isMutating && renderNoResults()}
       {!!data?.length && renderLocations()}

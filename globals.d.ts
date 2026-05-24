@@ -9,5 +9,9 @@ declare module 'weather-icons-react' {
 
   export type WeatherIcon = React.FC<WeatherIconProps>
 
+  export const WiThermometerExterior: WeatherIcon
+  export const WiThermometer: WeatherIcon
+  export const WiStrongWind: WeatherIcon
+  export const WiCloud: WeatherIcon
   export const WiDaySnow: WeatherIcon
 }
