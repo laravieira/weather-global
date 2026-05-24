@@ -42,16 +42,8 @@ const eslintConfig = defineConfig([
     rules: {
       'react-hooks/exhaustive-deps': 'off',
       'react-hooks/immutability': 'off',
-      'react-hooks/incompatible-library': 'off',
-      'prefer-const': 'off',
       '@stylistic/quote-props': ['error', 'as-needed'],
       '@stylistic/jsx-one-expression-per-line': 'off',
-    },
-  },
-  {
-    files: ['app/components/ui/**/*.{ts,tsx}'],
-    rules: {
-      'react-refresh/only-export-components': 'off',
     },
   },
 ])
