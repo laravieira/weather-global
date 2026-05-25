@@ -5,6 +5,7 @@ import useSWRMutation, {
   TriggerWithArgs,
 } from 'swr/mutation'
 import { Arguments } from 'swr'
+import { useRef } from 'react'
 
 /** Same as useSWRMutation, but with a debounce option.
  *
@@ -34,13 +35,13 @@ export function useSWRMutationWithDebounce<Data, Error, Key extends Arguments, A
 ): SWRMutationResponse<Data, Error, Key, Arg> {
   const { debounce } = options ?? {}
   const { trigger, ...rest } = useSWRMutation<Data, Error, Key, Arg, Data>(key, fetcher, options)
-  let handler: NodeJS.Timeout | null = null
+  const handlerRef = useRef<NodeJS.Timeout | null>(null)
 
   function triggerAfterDebounce(arg: Arg, options?: SWRMutationConfiguration<Data, Error, Key>) {
     const swrTrigger = trigger as TriggerWithArgs<Data, Error, Key, Arg>
     if (debounce === undefined) return swrTrigger(arg, options)
-    if (handler) clearTimeout(handler)
-    handler = setTimeout(() => {
+    if (handlerRef.current) clearTimeout(handlerRef.current)
+    handlerRef.current = setTimeout(() => {
       swrTrigger(arg, options)
     }, debounce)
   }
