@@ -29,11 +29,11 @@ async function WeatherPage(props: WeatherPagePros) {
         }}
         className="flex-col md:flex-row"
       >
-        <Typography variant="h2">
+        <Typography variant="h3">
           {location.name}
         </Typography>
         <Divider orientation="vertical" className="hidden md:block" />
-        <Typography variant="h1">
+        <Typography variant="h2">
           {weather.current?.temperature_2m}
           {weather.current_units?.temperature_2m}
         </Typography>

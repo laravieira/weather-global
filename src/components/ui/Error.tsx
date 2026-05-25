@@ -7,7 +7,7 @@ function Error({ error, showBackToHome }: { error: string, showBackToHome?: bool
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: 8 }}>
       <WrongLocationOutlined sx={{ width: 64, height: 64 }} />
-      <Typography variant="h3">{error}</Typography>
+      <Typography variant="h4">{error}</Typography>
       {showBackToHome && (
         <Button variant="outlined" href="/">
           <ChevronLeftOutlined />

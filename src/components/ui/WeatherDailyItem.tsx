@@ -49,9 +49,8 @@ function WeatherDailyItem({ daily, units, index }: WeatherDailyItemProps) {
       }}
     >
       <Typography
-        variant="h3"
+        variant="h5"
         sx={{
-          fontWeight: 600,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',

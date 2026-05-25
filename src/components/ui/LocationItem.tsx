@@ -8,6 +8,7 @@ import {
   PinDropOutlined,
 } from '@mui/icons-material'
 import DetailItem from '@/components/ui/DetailItem'
+import useRecentLocations from '@/hooks/useRecentLocations'
 
 type LocationItemProps = {
   location: OpenMeteoGeocodingLocation
@@ -15,6 +16,7 @@ type LocationItemProps = {
 
 function LocationItem({ location }: LocationItemProps) {
   const region = location.admin1 ? `${location.admin1}, ${location.country}` : location.country
+  const { addToRecents } = useRecentLocations()
 
   function renderDetails() {
     return (
@@ -47,11 +49,11 @@ function LocationItem({ location }: LocationItemProps) {
         border: '1px solid #00000011',
       }}
       href={`/${location.id}/${location.latitude}/${location.longitude}`}
+      onClick={() => addToRecents(location)}
     >
       <Typography
         variant="h6"
         sx={{
-          fontWeight: 600,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
