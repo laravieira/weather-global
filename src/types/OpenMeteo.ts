@@ -26,6 +26,7 @@ export enum OpenMeteoForecastHourlyOptions {
 export enum OpenMeteoForecastDailyOptions {
   WEATHER_CODE = 'weather_code',
   TEMPERATURE_2M_MIN = 'temperature_2m_min',
+  TEMPERATURE_2M_MEAN = 'temperature_2m_mean',
   TEMPERATURE_2M_MAX = 'temperature_2m_max',
 }
 

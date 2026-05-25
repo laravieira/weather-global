@@ -1,5 +1,5 @@
 import { OpenMeteoService } from '@/services/OpenMeteoService'
-import { OpenMeteoForecastCurrentOptions } from '@/types/OpenMeteo'
+import { OpenMeteoForecastCurrentOptions, OpenMeteoForecastDailyOptions } from '@/types/OpenMeteo'
 import WeatherPage from '@/app/[id]/_components/WeatherPage'
 import Error from '@/components/ui/Error'
 
@@ -23,6 +23,13 @@ export default async function Page(props: PageProps<'/[id]/[latitude]/[longitude
         OpenMeteoForecastCurrentOptions.WIND_SPEED_10M,
         OpenMeteoForecastCurrentOptions.WEATHER_CODE,
       ],
+      daily: [
+        OpenMeteoForecastDailyOptions.TEMPERATURE_2M_MIN,
+        OpenMeteoForecastDailyOptions.TEMPERATURE_2M_MEAN,
+        OpenMeteoForecastDailyOptions.TEMPERATURE_2M_MAX,
+        OpenMeteoForecastDailyOptions.WEATHER_CODE,
+      ],
+      forecast_days: 5,
     }),
   ])
 

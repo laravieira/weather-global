@@ -3,9 +3,12 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import { FilterHdrOutlined, GroupsOutlined, PinDropOutlined } from '@mui/icons-material'
-import { ElementType } from 'react'
 import { WiCloud, WiStrongWind } from 'weather-icons-react'
 import { parseWeatherCodeToString } from '@/utils/parseWeatherCodeToString'
+import DetailItem from '@/components/ui/DetailItem'
+import List from '@mui/material/List'
+import WeatherDailyItem from '@/components/ui/WeatherDailyItem'
+import { Fragment } from 'react'
 
 type WeatherPagePros = {
   location: OpenMeteoGeocodingLocation
@@ -17,24 +20,22 @@ async function WeatherPage(props: WeatherPagePros) {
 
   function renderHeader() {
     return (
-      <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 3,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        className="flex-col md:flex-row"
+      >
         <Typography variant="h2">
           {location.name}
         </Typography>
-        <Divider orientation="vertical" />
+        <Divider orientation="vertical" className="hidden md:block" />
         <Typography variant="h1">
           {weather.current?.temperature_2m}
           {weather.current_units?.temperature_2m}
-        </Typography>
-      </Box>
-    )
-  }
-  function renderDetail(Icon: ElementType, title: string, value: string) {
-    return (
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }} title={title}>
-        <Icon style={{ width: 22, height: 22 }} />
-        <Typography variant="body2" color="text.secondary">
-          {value}
         </Typography>
       </Box>
     )
@@ -45,13 +46,26 @@ async function WeatherPage(props: WeatherPagePros) {
 
     return (
       <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap', marginTop: 2 }}>
-        {renderDetail(WiStrongWind, 'Wind velocity', `${weather.current?.wind_speed_10m}km/h`)}
-        {renderDetail(WiCloud, 'Weather condition', parseWeatherCodeToString(weather.current?.weather_code as number ?? 0))}
+        <DetailItem icon={WiStrongWind} title="Wind velocity" value={`${weather.current?.wind_speed_10m}km/h`} />
+        <DetailItem icon={WiCloud} title="Weather condition" value={parseWeatherCodeToString(weather.current?.weather_code as number ?? 0)} />
 
-        {renderDetail(PinDropOutlined, 'Region', region)}
-        {location.population && renderDetail(GroupsOutlined, 'Population', `${(location.population / 1000).toFixed(0)}M`)}
-        {location.elevation && renderDetail(FilterHdrOutlined, 'Altitude', `${location.elevation}m`)}
+        <DetailItem icon={PinDropOutlined} title="Region" value={region} />
+        {location.population && <DetailItem icon={GroupsOutlined} title="Population" value={`${(location.population / 1000).toFixed(0)}M`} />}
+        {location.elevation && <DetailItem icon={FilterHdrOutlined} title="Altitude" value={`${location.elevation}m`} />}
       </Box>
+    )
+  }
+
+  function renderDaily() {
+    return (
+      <List sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2, marginTop: 8 }}>
+        { weather.daily?.time?.map((key, index) => (
+          <Fragment key={key}>
+            <WeatherDailyItem daily={weather.daily} units={weather.daily_units} index={index} />
+            <Divider orientation="horizontal" />
+          </Fragment>
+        ))}
+      </List>
     )
   }
 
@@ -59,6 +73,7 @@ async function WeatherPage(props: WeatherPagePros) {
     <>
       {renderHeader()}
       {renderDetails()}
+      {renderDaily()}
     </>
   )
 }

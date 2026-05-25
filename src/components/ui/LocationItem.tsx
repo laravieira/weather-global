@@ -7,6 +7,7 @@ import {
   GroupsOutlined,
   PinDropOutlined,
 } from '@mui/icons-material'
+import DetailItem from '@/components/ui/DetailItem'
 
 type LocationItemProps = {
   location: OpenMeteoGeocodingLocation
@@ -25,28 +26,9 @@ function LocationItem({ location }: LocationItemProps) {
           flexWrap: 'wrap',
         }}
       >
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }} title="Region">
-          <PinDropOutlined />
-          <Typography variant="body2" color="text.secondary">
-            {region}
-          </Typography>
-        </Box>
-        {location.population && (
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }} title="Population">
-            <GroupsOutlined />
-            <Typography variant="body2" color="text.secondary">
-              {(location.population / 1000).toFixed(0)}M
-            </Typography>
-          </Box>
-        )}
-        {location.elevation && (
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }} title="Altitude">
-            <FilterHdrOutlined />
-            <Typography variant="body2" color="text.secondary">
-              {location.elevation}m
-            </Typography>
-          </Box>
-        )}
+        <DetailItem icon={PinDropOutlined} title="Region" value={region} />
+        {location.population && <DetailItem icon={GroupsOutlined} title="Population" value={`${(location.population / 1000).toFixed(0)}M`} />}
+        {location.elevation && <DetailItem icon={FilterHdrOutlined} title="Altitude" value={`${location.elevation}m`} />}
       </Box>
     )
   }
