@@ -1,16 +1,16 @@
 import { OpenMeteoService } from '@/services/OpenMeteoService'
 import { OpenMeteoForecastCurrentOptions, OpenMeteoForecastDailyOptions } from '@/types/OpenMeteo'
 import WeatherPage from '@/app/[id]/_components/WeatherPage'
-import Error from '@/components/ui/Error'
+import { notFound } from 'next/navigation'
 
 export default async function LocationPage(props: PageProps<'/[id]'>) {
   const params = await props.params
   const id = Number.parseInt(params.id)
 
-  if (isNaN(id)) return <Error error="Invalid link" showBackToHome />
+  if (isNaN(id)) return notFound()
 
   const location = await OpenMeteoService.location({ key: 'location', location: id })
-  if (!location.id) return <Error error="Invalid link" showBackToHome />
+  if (!location.id) return notFound()
 
   const weather = await OpenMeteoService.weather({
     key: 'weather',
@@ -29,7 +29,7 @@ export default async function LocationPage(props: PageProps<'/[id]'>) {
     ],
     forecast_days: 5,
   })
-  if (!weather.latitude || !weather.longitude) return <Error error="Invalid link" showBackToHome />
+  if (!weather.latitude || !weather.longitude) return notFound()
 
   return (
     <WeatherPage location={location} weather={weather} />

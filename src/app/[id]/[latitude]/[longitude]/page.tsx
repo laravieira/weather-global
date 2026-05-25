@@ -1,7 +1,7 @@
 import { OpenMeteoService } from '@/services/OpenMeteoService'
 import { OpenMeteoForecastCurrentOptions, OpenMeteoForecastDailyOptions } from '@/types/OpenMeteo'
 import WeatherPage from '@/app/[id]/_components/WeatherPage'
-import Error from '@/components/ui/Error'
+import { notFound } from 'next/navigation'
 
 export default async function Page(props: PageProps<'/[id]/[latitude]/[longitude]'>) {
   const params = await props.params
@@ -10,7 +10,7 @@ export default async function Page(props: PageProps<'/[id]/[latitude]/[longitude
   const longitude = Number.parseFloat(params.longitude)
 
   if (isNaN(id) || isNaN(latitude) || isNaN(longitude))
-    return <Error error="Invalid link" showBackToHome />
+    return notFound()
 
   const promises = await Promise.allSettled([
     OpenMeteoService.location({ key: 'location', location: id }),
@@ -37,7 +37,7 @@ export default async function Page(props: PageProps<'/[id]/[latitude]/[longitude
   const weather = promises[1].status === 'fulfilled' ? promises[1].value : promises[1].reason as string
 
   if (typeof location === 'string' || typeof weather === 'string')
-    return <Error error="Invalid link" showBackToHome />
+    return notFound()
 
   return (
     <WeatherPage location={location} weather={weather} />
